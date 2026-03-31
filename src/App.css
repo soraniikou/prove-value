@@ -38,14 +38,14 @@ body::before {
 .screen-canvas { position: fixed; inset: 0; }
 
 .screen h1 {
-  font-size: clamp(1.5rem, 4.5vw, 2.2rem);
+  font-size: clamp(1.2rem, 3.6vw, 1.76rem);
   font-weight: 300; letter-spacing: 0.14em;
   text-align: center; line-height: 1.7; margin-bottom: 0.5rem;
 }
 .sub { font-size: 0.78rem; color: var(--dim); letter-spacing: 0.15em; margin-bottom: 3rem; text-align: center; }
 
 .weight-display {
-  font-size: clamp(5rem, 18vw, 8rem);
+  font-size: clamp(4rem, 14.4vw, 6.4rem);
   font-weight: 300; font-style: italic; line-height: 1; margin-bottom: 2rem;
   transition: color 0.4s, text-shadow 0.4s;
 }
