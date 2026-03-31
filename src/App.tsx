@@ -361,7 +361,7 @@ export default function App() {
       {screen === 'end' && (
         <div className="screen end-screen">
           <div className="final-message">{finalMsg}</div>
-          <div className="final-sub">あなたはもう、証明した。<br />you have already proved your value.</div>
+          <div className="final-sub"><br />you have already proved your value.</div>
           <button className="restart" onClick={handleRestart}>/ again</button>
         </div>
       )}
