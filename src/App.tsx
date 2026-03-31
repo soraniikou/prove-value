@@ -25,9 +25,9 @@ const BASS_MINOR  = ['A2','E2','D2','G2']
 const BASS_MAJOR  = ['A2','E2','C#2','F#2']
 
 function getFinalMessage(w: number) {
-  if (w <= 3) return 'その重さも、\nあなたの音になった。'
-  if (w <= 6) return 'ゆっくりでいい。\nそれでも、あなたは動いている。'
-  return '重いほど、\n根は深く張っていく。'
+  if (w <= 3) return 'その重さも、\n一部になった。'
+  if (w <= 6) return 'ゆっくりでいい。\nそれでも、あなたの世界は動いている。'
+  return 'あなたじゃないと、\n。だめなことがある'
 }
 
 type Screen = 'weight' | 'feel' | 'color' | 'canvas' | 'end'
@@ -316,7 +316,7 @@ export default function App() {
       )}
       {screen === 'feel' && (
         <div className="screen">
-          <h2>今日の音の質感は？</h2>
+          <h2>今の音の質感は？</h2>
           <p className="sub">choose your sound texture</p>
           <div className="feel-grid">
             {([
@@ -336,7 +336,7 @@ export default function App() {
       )}
       {screen === 'color' && (
         <div className="screen">
-          <h2>今日の色を選んでください</h2>
+          <h2>今の色を選んでください</h2>
           <p className="sub">choose the color of today</p>
           <div className="color-grid">
             {COLORS.map((c, i) => (
@@ -352,7 +352,7 @@ export default function App() {
         <div className="screen-canvas">
           <canvas ref={canvasRef} className="drawing-canvas" />
           <div className="canvas-ui">
-            <p className="hint">画面に描いてください　声も吹き込んでください<br />draw · speak · breathe</p>
+            <p className="hint">画面に描いて　声も吹き込んで<br />draw · speak · breathe</p>
             <div id="mic-ring" />
             <button className="done-btn" onClick={handleDone}>完成させる</button>
           </div>
@@ -362,7 +362,7 @@ export default function App() {
         <div className="screen end-screen">
           <div className="final-message">{finalMsg}</div>
           <div className="final-sub">あなたはもう、証明した。<br />you have already proved your value.</div>
-          <button className="restart" onClick={handleRestart}>もう一度 / again</button>
+          <button className="restart" onClick={handleRestart}>/ again</button>
         </div>
       )}
       <div id="particles" />
