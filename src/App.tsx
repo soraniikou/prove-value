@@ -320,10 +320,10 @@ export default function App() {
           <p className="sub">choose your sound texture</p>
           <div className="feel-grid">
             {([
-              { key: 'crystal', icon: '✦', ja: 'クリスタル', en: 'crystal' },
-              { key: 'warm',    icon: '◎', ja: '温かい',     en: 'warm'    },
-              { key: 'electro', icon: '⚡', ja: 'エレクトロ', en: 'electro' },
-              { key: 'septh',    icon: '◈', ja: '立体的',     en: 'depth'    },
+              { key: 'crystal', icon: '💎', ja: 'クリスタル', en: 'crystal' },
+              { key: 'warm',    icon: '🩷', ja: '温かい',     en: 'warm'    },
+              { key: 'electro', icon: '🎸', ja: 'エレクトロ', en: 'electro' },
+              { key: 'septh',    icon: '🎹', ja: '立体的',     en: 'depth'    },
             ] as const).map(f => (
               <div key={f.key} className={`feel-card ${feel===f.key?'selected':''}`} onClick={() => setFeel(f.key)}>
                 <div className="feel-icon">{f.icon}</div>
