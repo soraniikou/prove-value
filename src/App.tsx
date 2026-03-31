@@ -25,9 +25,9 @@ const BASS_MINOR  = ['A2','E2','D2','G2']
 const BASS_MAJOR  = ['A2','E2','C#2','F#2']
 
 function getFinalMessage(w: number) {
-  if (w <= 3) return 'その重さも、\n一部になった。'
+  if (w <= 3) return 'その重さも、\n大切な一部になった。'
   if (w <= 6) return 'ゆっくりでいい。\nそれでも、あなたの世界は動いている。'
-  return 'あなたじゃないと、\n。だめなことがある'
+  return 'あなたじゃないと\nだめなことがある'
 }
 
 type Screen = 'weight' | 'feel' | 'color' | 'canvas' | 'end'
@@ -307,11 +307,11 @@ export default function App() {
       )}
       {screen === 'weight' && (
         <div className="screen">
-          <h1>今日の自分の<br />重さを教えてください</h1>
-          <p className="sub">how heavy do you feel today</p>
+          <h1>今の自分の<br />重さを教えてください</h1>
+          <p className="sub">how heavy do you feel now</p>
           <div className="weight-display" style={{ color: `hsl(${200+weight*5},70%,68%)`, textShadow: `0 0 40px hsla(${200+weight*5},70%,68%,0.5)` }}>{weight}</div>
           <input type="range" min={1} max={10} value={weight} onChange={e => setWeight(Number(e.target.value))} />
-          <button className="next-btn" onClick={() => setScreen('feel')}>次へ</button>
+          <button className="next-btn" onClick={() => setScreen('feel')}>next</button>
         </div>
       )}
       {screen === 'feel' && (
@@ -323,7 +323,7 @@ export default function App() {
               { key: 'crystal', icon: '✦', ja: 'クリスタル', en: 'crystal' },
               { key: 'warm',    icon: '◎', ja: '温かい',     en: 'warm'    },
               { key: 'electro', icon: '⚡', ja: 'エレクトロ', en: 'electro' },
-              { key: 'void',    icon: '◈', ja: '空間的',     en: 'void'    },
+              { key: 'septh',    icon: '◈', ja: '立体的',     en: 'depth'    },
             ] as const).map(f => (
               <div key={f.key} className={`feel-card ${feel===f.key?'selected':''}`} onClick={() => setFeel(f.key)}>
                 <div className="feel-icon">{f.icon}</div>
@@ -345,7 +345,7 @@ export default function App() {
                 onClick={() => setColor(c)} />
             ))}
           </div>
-          <button className="next-btn" disabled={!color} onClick={goToCanvas}>次へ</button>
+          <button className="next-btn" disabled={!color} onClick={goToCanvas}>next</button>
         </div>
       )}
       {screen === 'canvas' && (
@@ -354,7 +354,7 @@ export default function App() {
           <div className="canvas-ui">
             <p className="hint">画面に描いて　声も吹き込んで<br />draw · speak · breathe</p>
             <div id="mic-ring" />
-            <button className="done-btn" onClick={handleDone}>完成させる</button>
+            <button className="done-btn" onClick={handleDone}>finish</button>
           </div>
         </div>
       )}
@@ -362,7 +362,7 @@ export default function App() {
         <div className="screen end-screen">
           <div className="final-message">{finalMsg}</div>
           <div className="final-sub"><br />you have already proved your value.</div>
-          <button className="restart" onClick={handleRestart}>/ again</button>
+          <button className="restart" onClick={handleRestart}> again</button>
         </div>
       )}
       <div id="particles" />
