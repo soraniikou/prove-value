@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import * as Tone from 'tone'
 import './App.css'
 
-type Feel = 'crystal' | 'warm' | 'electro' | 'void'
+type Feel = 'crystal' | 'warm' | 'electro' | 'depth'
 interface ColorData { hex: string; hue: number }
 
 const COLORS: ColorData[] = [
@@ -16,7 +16,7 @@ const FEEL_PRESETS = {
   crystal: { padType: 'sine',     padVolume: -10, arpType: 'triangle', arpVolume: -8,  bassType: 'sawtooth', bassVolume: -22, reverbDecay: 5, reverbWet: 0.65, filterFreq: 3500, delayTime: '8n',  delayFeedback: 0.25, arpSpeed: '8n'  },
   warm:    { padType: 'triangle', padVolume: -9,  arpType: 'sine',     arpVolume: -12, bassType: 'triangle', bassVolume: -18, reverbDecay: 4, reverbWet: 0.5,  filterFreq: 1800, delayTime: '4n',  delayFeedback: 0.2,  arpSpeed: '4n.' },
   electro: { padType: 'sawtooth', padVolume: -14, arpType: 'square',   arpVolume: -10, bassType: 'sawtooth', bassVolume: -16, reverbDecay: 3, reverbWet: 0.4,  filterFreq: 2400, delayTime: '8n.', delayFeedback: 0.35, arpSpeed: '16n' },
-  void:    { padType: 'sine',     padVolume: -8,  arpType: 'sine',     arpVolume: -16, bassType: 'sine',     bassVolume: -24, reverbDecay: 9, reverbWet: 0.8,  filterFreq: 900,  delayTime: '2n',  delayFeedback: 0.45, arpSpeed: '4n.' },
+  depth:   { padType: 'sine',     padVolume: -8,  arpType: 'sine',     arpVolume: -16, bassType: 'sine',     bassVolume: -24, reverbDecay: 9, reverbWet: 0.8,  filterFreq: 900,  delayTime: '2n',  delayFeedback: 0.45, arpSpeed: '4n.' },
 } as const
 
 const MINOR_NOTES = ['A3','C4','D4','E4','G4','A4','C5','D5','E5','G5']
@@ -25,12 +25,14 @@ const BASS_MINOR  = ['A2','E2','D2','G2']
 const BASS_MAJOR  = ['A2','E2','C#2','F#2']
 
 function getFinalMessage(w: number) {
-  if (w <= 3) return 'その重さも、\n大切な一部になった。'
+  if (w <= 2) return 'その重さも、\n大切な一部になった。'
+  if (w <= 4) return '完璧でなくても\n諦めなくていい。'
   if (w <= 6) return 'ゆっくりでいい。\nそれでも、あなたの世界は動いている。'
+  if (w <= 8) return '行き来してもいい。\完璧でもあきらめでもない。'
   return 'あなたじゃないと\nだめなことがある'
 }
 
-type Screen = 'weight' | 'feel' | 'color' | 'canvas' | 'end'
+type Screen = 'weight' | 'feel' | 'color' | 'canvas' | 'breath' | 'end'
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('weight')
@@ -68,7 +70,9 @@ export default function App() {
     Tone.getTransport().bpm.value = getTempo()
     const preset = FEEL_PRESETS[feel ?? 'electro']
     const limiter  = new Tone.Limiter(-2).toDestination()
-    const reverb   = new Tone.Reverb({ decay: preset.reverbDecay, wet: preset.reverbWet }).connect(limiter)
+    const reverbDecay = feel === 'crystal' ? 7 : preset.reverbDecay
+    const reverbWet   = feel === 'crystal' ? 0.75 : preset.reverbWet
+    const reverb   = new Tone.Reverb({ decay: reverbDecay, wet: reverbWet }).connect(limiter)
     const delay    = new Tone.FeedbackDelay(preset.delayTime as Tone.Unit.Time, preset.delayFeedback).connect(reverb)
     const gain     = new Tone.Gain(1).connect(delay)
     const filt     = new Tone.Filter(preset.filterFreq, 'lowpass', -24).connect(gain)
@@ -76,7 +80,7 @@ export default function App() {
     filtRef.current       = filt
     padRef.current = new Tone.PolySynth(Tone.Synth, {
       oscillator: { type: preset.padType as OscillatorType },
-      envelope:   { attack: 1.2, decay: 0.5, sustain: 0.8, release: 3 },
+      envelope:   { attack: feel === 'warm' ? 1.8 : 1.2, decay: 0.5, sustain: 0.8, release: 3 },
       volume:     preset.padVolume,
     }).connect(filt)
     arpRef.current = new Tone.PolySynth(Tone.Synth, {
@@ -290,8 +294,12 @@ export default function App() {
   }
 
   async function handleDone() {
-    stopMic(); await transitionToMajor()
-    setFinalMsg(getFinalMessage(weight)); setScreen('end')
+    stopMic()
+    await transitionToMajor()
+    setScreen('breath')
+    await new Promise(r => setTimeout(r, 1800))
+    setFinalMsg(getFinalMessage(weight))
+    setScreen('end')
   }
 
   function handleRestart() {
@@ -323,7 +331,7 @@ export default function App() {
               { key: 'crystal', icon: '💎', ja: 'クリスタル', en: 'crystal' },
               { key: 'warm',    icon: '🩷', ja: '温かい',     en: 'warm'    },
               { key: 'electro', icon: '🎸', ja: 'エレクトロ', en: 'electro' },
-              { key: 'septh',    icon: '🎹', ja: '立体的',     en: 'depth'    },
+              { key: 'depth',    icon: '🎹', ja: '立体的',     en: 'depth'    },
             ] as const).map(f => (
               <div key={f.key} className={`feel-card ${feel===f.key?'selected':''}`} onClick={() => setFeel(f.key)}>
                 <div className="feel-icon">{f.icon}</div>
@@ -357,6 +365,13 @@ export default function App() {
             <button className="done-btn" onClick={handleDone}>finish</button>
           </div>
         </div>
+      )}
+      {screen === 'breath' && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: '#06080f',
+        }} />
       )}
       {screen === 'end' && (
         <div className="screen end-screen">
